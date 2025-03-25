@@ -1,0 +1,16 @@
+.git
+.gitignore
+.env
+*.md
+target/
+!target/*.jar
+.idea/
+*.iml
+.vscode/
+.settings/
+.project
+.classpath
+README.md
+.mvn/
+mvnw
+mvnw.cmd
