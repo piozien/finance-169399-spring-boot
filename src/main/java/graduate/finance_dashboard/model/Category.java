@@ -27,8 +27,7 @@ public class Category {
 
     @OneToMany(
             mappedBy = "category",
-            cascade = CascadeType.ALL,
-            orphanRemoval = true,
+            cascade = {CascadeType.PERSIST, CascadeType.MERGE},
             fetch = FetchType.EAGER
     )
     @Builder.Default
