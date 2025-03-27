@@ -10,6 +10,7 @@ import graduate.finance_dashboard.exception.ApiException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -21,6 +22,7 @@ import org.slf4j.LoggerFactory;
 @RestController
 @RequestMapping("/api/categories")
 @RequiredArgsConstructor
+@Transactional
 public class CategoryController {
 
     private final CategoryService categoryService;

@@ -27,7 +27,7 @@ public class Category {
 
     @OneToMany(
             mappedBy = "category",
-            cascade = {CascadeType.PERSIST, CascadeType.MERGE},
+            cascade = CascadeType.ALL,
             orphanRemoval = true,
             fetch = FetchType.EAGER
     )
@@ -45,6 +45,17 @@ public class Category {
     @PreUpdate
     protected void onUpdate() {
         this.updatedAt = LocalDateTime.now();
+    }
+
+    @PreRemove
+    protected void onPreRemove() {
+        for (Expense expense : new ArrayList<>(expenses)) {
+            expense.setCategory(null);
+            expenses.remove(expense);
+        }
+        if (user != null) {
+            user.getCategories().remove(this);
+        }
     }
 
     public List<Expense> getExpenses() {

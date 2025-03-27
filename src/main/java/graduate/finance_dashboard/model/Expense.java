@@ -24,7 +24,7 @@ public class Expense {
     private BigDecimal amount;
 
     private String description;
-
+    
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "category_id", nullable = false)
     private Category category;
@@ -44,6 +44,16 @@ public class Expense {
     @PreUpdate
     protected void onUpdate() {
         this.updatedAt = LocalDateTime.now();
+    }
+    
+    @PreRemove
+    protected void onPreRemove() {
+        if (category != null) {
+            category.getExpenses().remove(this);
+        }
+        if (user != null) {
+            user.getExpenses().remove(this);
+        }
     }
 
     public void setCategory(Category newCategory) {

@@ -19,6 +19,7 @@ import java.util.Optional;
 public class CategoryService {
 
     private final CategoryRepository categoryRepository;
+    private final ExpenseRepository expenseRepository;
 
     @Transactional(readOnly = true)
     public List<Category> getCategoriesByUser(User user) {
@@ -89,12 +90,12 @@ public class CategoryService {
         }
 
         try {
-            log.info("Deleting category and related expenses: {}", categoryId);
+            log.info("Deleting category with all its expenses: {}", categoryId);
             categoryRepository.delete(category);
-            log.info("Successfully deleted category: {}", categoryId);
+            log.info("Category and all related data deleted successfully");
         } catch (Exception e) {
-            log.error("Error while deleting category {}: {}", categoryId, e.getMessage());
-            throw new ApiException("Failed to delete category", HttpStatus.INTERNAL_SERVER_ERROR);
+            log.error("Error during category deletion: {}", e.getMessage(), e);
+            throw new ApiException("Failed to delete category: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 }
