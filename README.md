@@ -21,8 +21,6 @@ docker build -t finance-dashboard .
 docker run -p 8080:8080 finance-dashboard
 ```
 
-## Deployment
-This application is configured for deployment on Render.com
 
 ### Environment Variables
 - `SPRING_PROFILES_ACTIVE`: prod
