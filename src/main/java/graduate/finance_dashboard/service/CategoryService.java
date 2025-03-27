@@ -19,7 +19,7 @@ import java.util.Optional;
 public class CategoryService {
 
     private final CategoryRepository categoryRepository;
-    private final ExpenseRepository expenseRepository;
+
 
     @Transactional(readOnly = true)
     public List<Category> getCategoriesByUser(User user) {
