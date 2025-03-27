@@ -107,7 +107,16 @@ public class ExpenseService {
             throw new ApiException("You do not have permission to delete this expense", HttpStatus.FORBIDDEN);
         }
 
+        Category category = expense.getCategory();
+        if (category != null) {
+            category.getExpenses().remove(expense);
+            expense.setCategory(null);
+        }
+        
+        expense.setUser(null);
+
         log.info("Deleting expense with ID: {}", id);
         expenseRepository.deleteById(id);
+        expenseRepository.delete(expense);
     }
 }
