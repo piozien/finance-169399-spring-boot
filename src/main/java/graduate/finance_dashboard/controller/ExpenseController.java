@@ -128,28 +128,37 @@ public class ExpenseController {
             throw new ApiException("You don't have access to this expense", HttpStatus.FORBIDDEN);
         }
 
-        if (expenseDto.getCategoryId() != null) {
-            Category category = categoryService.getCategoryById(expenseDto.getCategoryId());
-            if (!category.getUser().getUser_id().equals(user.getUser_id())) {
-                throw new ApiException("You don't have access to this category", HttpStatus.FORBIDDEN);
-            }
-            existingExpense.setCategory(category);
-        }
+        Expense newExpense = new Expense();
+        newExpense.setAmount(existingExpense.getAmount());
+        newExpense.setDescription(existingExpense.getDescription());
+        newExpense.setUser(user);
+        newExpense.setCreatedAt(existingExpense.getCreatedAt());
 
         if (expenseDto.getAmount() != null) {
             if (expenseDto.getAmount().signum() <= 0) {
                 throw new ApiException("Amount must be greater than zero", HttpStatus.BAD_REQUEST);
             }
-            existingExpense.setAmount(expenseDto.getAmount());
+            newExpense.setAmount(expenseDto.getAmount());
         }
 
         if (expenseDto.getDescription() != null) {
-            existingExpense.setDescription(expenseDto.getDescription());
+            newExpense.setDescription(expenseDto.getDescription());
         }
 
-        Expense updatedExpense = expenseService.updateExpense(id, existingExpense, user);
-        log.info("Successfully updated expense with ID: {}", id);
-        return ResponseEntity.ok(ExpenseMapper.toDto(updatedExpense));
+        if (expenseDto.getCategoryId() != null) {
+            Category newCategory = categoryService.getCategoryById(expenseDto.getCategoryId());
+            if (!newCategory.getUser().getUser_id().equals(user.getUser_id())) {
+                throw new ApiException("You don't have access to this category", HttpStatus.FORBIDDEN);
+            }
+            newExpense.setCategory(newCategory);
+        } else {
+            newExpense.setCategory(existingExpense.getCategory());
+        }
+
+        expenseService.deleteExpense(id, user);
+        Expense savedExpense = expenseService.createExpense(newExpense, user);
+        log.info("Successfully updated expense: old_id={}, new_id={}", id, savedExpense.getId());
+        return ResponseEntity.ok(ExpenseMapper.toDto(savedExpense));
     }
 
     @DeleteMapping("/{id}")

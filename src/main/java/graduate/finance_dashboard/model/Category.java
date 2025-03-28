@@ -61,6 +61,4 @@ public class Category {
     public List<Expense> getExpenses() {
         return expenses != null ? expenses : new ArrayList<>();
     }
-
-
 }
